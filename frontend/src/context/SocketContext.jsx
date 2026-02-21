@@ -7,7 +7,8 @@ export const SocketProvider = ({ children }) => {
   const socketRef = useRef(null);
 
   useEffect(() => {
-    socketRef.current = io(window.location.origin, {
+    const socketUrl = import.meta.env.VITE_BACKEND_URL || window.location.origin;
+    socketRef.current = io(socketUrl, {
       transports: ['websocket', 'polling'],
     });
     return () => {

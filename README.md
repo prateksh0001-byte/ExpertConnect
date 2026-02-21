@@ -161,10 +161,21 @@ NODE_ENV=development
 
 ---
 
-## 🔧 Production Deployment Notes
+## 🚀 Deploy to Vercel
 
-- Set `NODE_ENV=production`  
-- Set `MONGODB_URI` to your Atlas connection string  
-- Set `CLIENT_URL` to your deployed frontend URL  
-- Run `npm run build` in frontend, serve static files or deploy to Vercel/Netlify  
-- Backend can be deployed to Railway, Render, or any Node.js host
+**Frontend (this repo):** Deploy the `frontend` folder to [Vercel](https://vercel.com). Set **Root Directory** to `frontend` and add:
+
+- **`VITE_BACKEND_URL`** = your backend URL (e.g. from Railway or Render), no trailing slash.
+
+**Backend:** Host the `backend` on [Railway](https://railway.app), [Render](https://render.com), or any Node host. Set `MONGODB_URI`, `CLIENT_URL` (your Vercel URL), and `NODE_ENV=production`.
+
+Full step-by-step: **[docs/DEPLOY_VERCEL.md](docs/DEPLOY_VERCEL.md)**.
+
+---
+
+## 🔧 Production checklist
+
+- `NODE_ENV=production`
+- `MONGODB_URI` = Atlas (or production DB) connection string
+- `CLIENT_URL` = deployed frontend URL (for CORS)
+- Frontend: `VITE_BACKEND_URL` = deployed backend URL
