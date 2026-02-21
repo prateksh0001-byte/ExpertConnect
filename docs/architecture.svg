@@ -1,0 +1,339 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 820" width="1200" height="820">
+  <defs>
+    <!-- Background gradient -->
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#04081a"/>
+      <stop offset="50%" style="stop-color:#080e24"/>
+      <stop offset="100%" style="stop-color:#060b1e"/>
+    </linearGradient>
+
+    <!-- Orb gradients -->
+    <radialGradient id="orb1" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" style="stop-color:#6366f1;stop-opacity:0.18"/>
+      <stop offset="100%" style="stop-color:#6366f1;stop-opacity:0"/>
+    </radialGradient>
+    <radialGradient id="orb2" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" style="stop-color:#8b5cf6;stop-opacity:0.14"/>
+      <stop offset="100%" style="stop-color:#8b5cf6;stop-opacity:0"/>
+    </radialGradient>
+    <radialGradient id="orb3" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" style="stop-color:#06b6d4;stop-opacity:0.1"/>
+      <stop offset="100%" style="stop-color:#06b6d4;stop-opacity:0"/>
+    </radialGradient>
+
+    <!-- Node glows -->
+    <radialGradient id="frontendGlow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" style="stop-color:#6366f1;stop-opacity:0.5"/>
+      <stop offset="100%" style="stop-color:#6366f1;stop-opacity:0"/>
+    </radialGradient>
+    <radialGradient id="backendGlow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" style="stop-color:#10b981;stop-opacity:0.5"/>
+      <stop offset="100%" style="stop-color:#10b981;stop-opacity:0"/>
+    </radialGradient>
+    <radialGradient id="dbGlow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" style="stop-color:#f59e0b;stop-opacity:0.5"/>
+      <stop offset="100%" style="stop-color:#f59e0b;stop-opacity:0"/>
+    </radialGradient>
+    <radialGradient id="socketGlow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" style="stop-color:#ec4899;stop-opacity:0.5"/>
+      <stop offset="100%" style="stop-color:#ec4899;stop-opacity:0"/>
+    </radialGradient>
+    <radialGradient id="clientGlow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" style="stop-color:#06b6d4;stop-opacity:0.5"/>
+      <stop offset="100%" style="stop-color:#06b6d4;stop-opacity:0"/>
+    </radialGradient>
+
+    <!-- Card fills -->
+    <linearGradient id="frontendCard" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#1a1f3a"/>
+      <stop offset="100%" style="stop-color:#131830"/>
+    </linearGradient>
+    <linearGradient id="backendCard" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#0d2420"/>
+      <stop offset="100%" style="stop-color:#091a17"/>
+    </linearGradient>
+    <linearGradient id="dbCard" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#2a1f0a"/>
+      <stop offset="100%" style="stop-color:#1a1305"/>
+    </linearGradient>
+    <linearGradient id="socketCard" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#2a0d1f"/>
+      <stop offset="100%" style="stop-color:#1a0812"/>
+    </linearGradient>
+    <linearGradient id="clientCard" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#041e2a"/>
+      <stop offset="100%" style="stop-color:#021419"/>
+    </linearGradient>
+
+    <!-- Packet gradients -->
+    <linearGradient id="packetHTTP" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#6366f1;stop-opacity:0"/>
+      <stop offset="50%" style="stop-color:#6366f1;stop-opacity:1"/>
+      <stop offset="100%" style="stop-color:#6366f1;stop-opacity:0"/>
+    </linearGradient>
+    <linearGradient id="packetWS" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#ec4899;stop-opacity:0"/>
+      <stop offset="50%" style="stop-color:#ec4899;stop-opacity:1"/>
+      <stop offset="100%" style="stop-color:#ec4899;stop-opacity:0"/>
+    </linearGradient>
+    <linearGradient id="packetDB" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#f59e0b;stop-opacity:0"/>
+      <stop offset="50%" style="stop-color:#f59e0b;stop-opacity:1"/>
+      <stop offset="100%" style="stop-color:#f59e0b;stop-opacity:0"/>
+    </linearGradient>
+
+    <!-- Filters -->
+    <filter id="glow-indigo" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="4" result="blur"/>
+      <feComposite in="SourceGraphic" in2="blur" operator="over"/>
+    </filter>
+    <filter id="glow-green" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="4" result="blur"/>
+      <feComposite in="SourceGraphic" in2="blur" operator="over"/>
+    </filter>
+    <filter id="softglow" x="-80%" y="-80%" width="260%" height="260%">
+      <feGaussianBlur stdDeviation="12" result="blur"/>
+      <feComposite in="SourceGraphic" in2="blur" operator="over"/>
+    </filter>
+    <filter id="textglow">
+      <feGaussianBlur stdDeviation="3" result="blur"/>
+      <feComposite in="SourceGraphic" in2="blur" operator="over"/>
+    </filter>
+
+    <!-- Clip paths -->
+    <clipPath id="frontendClip">
+      <rect x="30" y="220" width="230" height="340" rx="16"/>
+    </clipPath>
+    <clipPath id="backendClip">
+      <rect x="480" y="160" width="240" height="420" rx="16"/>
+    </clipPath>
+
+    <!-- Arrow markers -->
+    <marker id="arrowIndigo" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+      <path d="M0,0 L0,6 L8,3 z" fill="#6366f1" opacity="0.8"/>
+    </marker>
+    <marker id="arrowGreen" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+      <path d="M0,0 L0,6 L8,3 z" fill="#10b981" opacity="0.8"/>
+    </marker>
+    <marker id="arrowAmber" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+      <path d="M0,0 L0,6 L8,3 z" fill="#f59e0b" opacity="0.8"/>
+    </marker>
+    <marker id="arrowPink" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+      <path d="M0,0 L0,6 L8,3 z" fill="#ec4899" opacity="0.8"/>
+    </marker>
+    <marker id="arrowCyan" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+      <path d="M0,0 L0,6 L8,3 z" fill="#06b6d4" opacity="0.8"/>
+    </marker>
+  </defs>
+
+  <!-- BACKGROUND -->
+  <rect width="1200" height="820" fill="url(#bgGrad)"/>
+  <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+    <circle cx="0" cy="0" r="0.8" fill="#ffffff" opacity="0.04"/>
+  </pattern>
+  <rect width="1200" height="820" fill="url(#grid)"/>
+
+  <!-- Ambient orbs -->
+  <ellipse cx="200" cy="400" rx="300" ry="300" fill="url(#orb1)">
+    <animateTransform attributeName="transform" type="translate" values="0,0; 30,-20; 0,0" dur="12s" repeatCount="indefinite"/>
+  </ellipse>
+  <ellipse cx="900" cy="300" rx="280" ry="280" fill="url(#orb2)">
+    <animateTransform attributeName="transform" type="translate" values="0,0; -25,30; 0,0" dur="15s" repeatCount="indefinite"/>
+  </ellipse>
+  <ellipse cx="600" cy="700" rx="250" ry="200" fill="url(#orb3)">
+    <animateTransform attributeName="transform" type="translate" values="0,0; 20,-15; 0,0" dur="10s" repeatCount="indefinite"/>
+  </ellipse>
+
+  <!-- TITLE -->
+  <text x="600" y="48" text-anchor="middle" font-family="'Segoe UI', system-ui, sans-serif" font-size="13" font-weight="600" letter-spacing="5" fill="#6366f1" opacity="0.7">SYSTEM ARCHITECTURE</text>
+  <text x="600" y="82" text-anchor="middle" font-family="'Segoe UI', system-ui, sans-serif" font-size="32" font-weight="800" fill="white" filter="url(#textglow)">ExpertConnect</text>
+  <text x="600" y="106" text-anchor="middle" font-family="'Segoe UI', system-ui, sans-serif" font-size="13" fill="#64748b">Real-Time Expert Session Booking System</text>
+  <line x1="450" y1="116" x2="750" y2="116" stroke="#6366f1" stroke-width="1" opacity="0.3"/>
+
+  <!-- CONNECTION LINES -->
+  <line x1="145" y1="185" x2="145" y2="218" stroke="#06b6d4" stroke-width="1.5" stroke-dasharray="4,3" opacity="0.4" marker-end="url(#arrowCyan)"/>
+  <line x1="262" y1="340" x2="478" y2="340" stroke="#6366f1" stroke-width="1.5" stroke-dasharray="5,3" opacity="0.5" marker-end="url(#arrowIndigo)"/>
+  <line x1="478" y1="370" x2="262" y2="370" stroke="#10b981" stroke-width="1.5" stroke-dasharray="5,3" opacity="0.4" marker-end="url(#arrowGreen)"/>
+  <path d="M 262 430 C 350 430 360 530 460 530" stroke="#ec4899" stroke-width="1.5" stroke-dasharray="5,3" fill="none" opacity="0.5" marker-end="url(#arrowPink)"/>
+  <path d="M 460 560 C 360 560 350 460 262 460" stroke="#ec4899" stroke-width="1.5" stroke-dasharray="5,3" fill="none" opacity="0.4" marker-end="url(#arrowPink)"/>
+  <line x1="722" y1="340" x2="910" y2="340" stroke="#f59e0b" stroke-width="1.5" stroke-dasharray="5,3" opacity="0.5" marker-end="url(#arrowAmber)"/>
+  <line x1="910" y1="370" x2="722" y2="370" stroke="#f59e0b" stroke-width="1.5" stroke-dasharray="5,3" opacity="0.4" marker-end="url(#arrowAmber)"/>
+  <line x1="600" y1="582" x2="560" y2="650" stroke="#ec4899" stroke-width="1.5" stroke-dasharray="4,3" opacity="0.5" marker-end="url(#arrowPink)"/>
+  <path d="M 460 680 C 350 700 200 680 145 645" stroke="#ec4899" stroke-width="1.5" stroke-dasharray="5,3" fill="none" opacity="0.4" marker-end="url(#arrowPink)"/>
+
+  <!-- NODE: CLIENT -->
+  <g>
+    <ellipse cx="145" cy="160" rx="80" ry="50" fill="url(#clientGlow)" opacity="0.6"/>
+    <rect x="60" y="130" width="170" height="72" rx="14" fill="url(#clientCard)" stroke="#06b6d4" stroke-width="1.2" stroke-opacity="0.6"/>
+    <rect x="80" y="145" width="32" height="24" rx="4" fill="none" stroke="#06b6d4" stroke-width="1.5" opacity="0.8"/>
+    <line x1="80" y1="151" x2="112" y2="151" stroke="#06b6d4" stroke-width="1" opacity="0.6"/>
+    <circle cx="84" cy="148" r="1.5" fill="#f87171" opacity="0.8"/>
+    <circle cx="89" cy="148" r="1.5" fill="#fbbf24" opacity="0.8"/>
+    <circle cx="94" cy="148" r="1.5" fill="#34d399" opacity="0.8"/>
+    <text x="122" y="155" font-family="'Segoe UI', sans-serif" font-size="11" font-weight="700" fill="#06b6d4">CLIENT</text>
+    <text x="122" y="168" font-family="'Segoe UI', sans-serif" font-size="9" fill="#64748b">Browser / Mobile</text>
+    <text x="122" y="179" font-family="'Segoe UI', sans-serif" font-size="8" fill="#06b6d4" opacity="0.6">React + Vite</text>
+  </g>
+
+  <!-- NODE: FRONTEND -->
+  <g>
+    <ellipse cx="145" cy="390" rx="130" ry="180" fill="url(#frontendGlow)" opacity="0.5"/>
+    <rect x="30" y="220" width="230" height="340" rx="16" fill="url(#frontendCard)" stroke="#6366f1" stroke-width="1.5" stroke-opacity="0.7"/>
+    <rect x="30" y="220" width="230" height="4" rx="2" fill="#6366f1" opacity="0.8"/>
+    <text x="145" y="244" text-anchor="middle" font-family="'Segoe UI', sans-serif" font-size="8" font-weight="600" letter-spacing="3" fill="#6366f1" opacity="0.8">FRONTEND</text>
+    <text x="145" y="262" text-anchor="middle" font-family="'Segoe UI', sans-serif" font-size="15" font-weight="800" fill="white">React + Vite</text>
+    <line x1="50" y1="272" x2="240" y2="272" stroke="#6366f1" stroke-width="0.5" opacity="0.3"/>
+    <text x="50" y="292" font-family="'Segoe UI', sans-serif" font-size="9" font-weight="600" letter-spacing="2" fill="#6366f1" opacity="0.6">PAGES</text>
+    <rect x="45" y="298" width="200" height="26" rx="7" fill="#6366f1" fill-opacity="0.1" stroke="#6366f1" stroke-width="0.8" stroke-opacity="0.4"/>
+    <circle cx="58" cy="311" r="4" fill="#6366f1" opacity="0.6"/>
+    <text x="68" y="315" font-family="'Segoe UI', sans-serif" font-size="10" font-weight="600" fill="#a5b4fc">ExpertList</text>
+    <rect x="45" y="330" width="200" height="26" rx="7" fill="#6366f1" fill-opacity="0.1" stroke="#6366f1" stroke-width="0.8" stroke-opacity="0.4"/>
+    <circle cx="58" cy="343" r="4" fill="#6366f1" opacity="0.6"/>
+    <text x="68" y="347" font-family="'Segoe UI', sans-serif" font-size="10" font-weight="600" fill="#a5b4fc">ExpertDetail</text>
+    <rect x="45" y="362" width="200" height="26" rx="7" fill="#6366f1" fill-opacity="0.1" stroke="#6366f1" stroke-width="0.8" stroke-opacity="0.4"/>
+    <circle cx="58" cy="375" r="4" fill="#6366f1" opacity="0.6"/>
+    <text x="68" y="379" font-family="'Segoe UI', sans-serif" font-size="10" font-weight="600" fill="#a5b4fc">BookingPage</text>
+    <rect x="45" y="394" width="200" height="26" rx="7" fill="#6366f1" fill-opacity="0.1" stroke="#6366f1" stroke-width="0.8" stroke-opacity="0.4"/>
+    <circle cx="58" cy="407" r="4" fill="#6366f1" opacity="0.6"/>
+    <text x="68" y="411" font-family="'Segoe UI', sans-serif" font-size="10" font-weight="600" fill="#a5b4fc">MyBookings</text>
+    <line x1="50" y1="432" x2="240" y2="432" stroke="#6366f1" stroke-width="0.5" opacity="0.3"/>
+    <text x="50" y="449" font-family="'Segoe UI', sans-serif" font-size="9" font-weight="600" letter-spacing="2" fill="#6366f1" opacity="0.6">UTILS</text>
+    <rect x="45" y="454" width="94" height="22" rx="6" fill="#6366f1" fill-opacity="0.08" stroke="#6366f1" stroke-width="0.6" stroke-opacity="0.3"/>
+    <text x="92" y="469" text-anchor="middle" font-family="'Segoe UI', sans-serif" font-size="9" fill="#818cf8">axios / api.js</text>
+    <rect x="146" y="454" width="99" height="22" rx="6" fill="#ec4899" fill-opacity="0.08" stroke="#ec4899" stroke-width="0.6" stroke-opacity="0.3"/>
+    <text x="196" y="469" text-anchor="middle" font-family="'Segoe UI', sans-serif" font-size="9" fill="#f472b6">SocketContext</text>
+  </g>
+
+  <!-- NODE: BACKEND -->
+  <g>
+    <ellipse cx="600" cy="375" rx="150" ry="200" fill="url(#backendGlow)" opacity="0.4"/>
+    <rect x="478" y="160" width="244" height="422" rx="16" fill="url(#backendCard)" stroke="#10b981" stroke-width="1.5" stroke-opacity="0.7"/>
+    <rect x="478" y="160" width="244" height="4" rx="2" fill="#10b981" opacity="0.8"/>
+    <text x="600" y="184" text-anchor="middle" font-family="'Segoe UI', sans-serif" font-size="8" font-weight="600" letter-spacing="3" fill="#10b981" opacity="0.8">BACKEND</text>
+    <text x="600" y="203" text-anchor="middle" font-family="'Segoe UI', sans-serif" font-size="15" font-weight="800" fill="white">Node.js + Express</text>
+    <line x1="498" y1="213" x2="702" y2="213" stroke="#10b981" stroke-width="0.5" opacity="0.3"/>
+    <rect x="520" y="220" width="160" height="24" rx="8" fill="#10b981" fill-opacity="0.15" stroke="#10b981" stroke-width="0.8" stroke-opacity="0.5"/>
+    <text x="600" y="236" text-anchor="middle" font-family="'Segoe UI', sans-serif" font-size="10" font-weight="700" fill="#34d399">server.js  Entry Point</text>
+    <text x="498" y="263" font-family="'Segoe UI', sans-serif" font-size="9" font-weight="600" letter-spacing="2" fill="#10b981" opacity="0.6">ROUTES</text>
+    <rect x="493" y="269" width="214" height="23" rx="6" fill="#10b981" fill-opacity="0.08" stroke="#10b981" stroke-width="0.7" stroke-opacity="0.4"/>
+    <text x="600" y="284" text-anchor="middle" font-family="'Segoe UI', sans-serif" font-size="9" fill="#6ee7b7">/api/experts  /api/bookings</text>
+    <text x="498" y="311" font-family="'Segoe UI', sans-serif" font-size="9" font-weight="600" letter-spacing="2" fill="#10b981" opacity="0.6">CONTROLLERS</text>
+    <rect x="493" y="317" width="100" height="40" rx="7" fill="#10b981" fill-opacity="0.1" stroke="#10b981" stroke-width="0.7" stroke-opacity="0.4"/>
+    <text x="543" y="332" text-anchor="middle" font-family="'Segoe UI', sans-serif" font-size="9" font-weight="600" fill="#6ee7b7">expert</text>
+    <rect x="607" y="317" width="100" height="40" rx="7" fill="#10b981" fill-opacity="0.1" stroke="#10b981" stroke-width="0.7" stroke-opacity="0.4"/>
+    <text x="657" y="332" text-anchor="middle" font-family="'Segoe UI', sans-serif" font-size="9" font-weight="600" fill="#6ee7b7">booking</text>
+    <text x="498" y="378" font-family="'Segoe UI', sans-serif" font-size="9" font-weight="600" letter-spacing="2" fill="#10b981" opacity="0.6">MODELS</text>
+    <rect x="493" y="384" width="100" height="32" rx="7" fill="#f59e0b" fill-opacity="0.1" stroke="#f59e0b" stroke-width="0.7" stroke-opacity="0.4"/>
+    <text x="543" y="397" text-anchor="middle" font-family="'Segoe UI', sans-serif" font-size="10" font-weight="700" fill="#fbbf24">Expert</text>
+    <rect x="607" y="384" width="100" height="32" rx="7" fill="#f59e0b" fill-opacity="0.1" stroke="#f59e0b" stroke-width="0.7" stroke-opacity="0.4"/>
+    <text x="657" y="397" text-anchor="middle" font-family="'Segoe UI', sans-serif" font-size="10" font-weight="700" fill="#fbbf24">Booking</text>
+    <text x="498" y="434" font-family="'Segoe UI', sans-serif" font-size="9" font-weight="600" letter-spacing="2" fill="#10b981" opacity="0.6">MIDDLEWARE</text>
+    <rect x="493" y="440" width="100" height="24" rx="6" fill="#10b981" fill-opacity="0.07" stroke="#10b981" stroke-width="0.6" stroke-opacity="0.3"/>
+    <text x="543" y="455" text-anchor="middle" font-family="'Segoe UI', sans-serif" font-size="9" fill="#6ee7b7">errorHandler</text>
+    <rect x="493" y="482" width="214" height="42" rx="8" fill="#dc2626" fill-opacity="0.1" stroke="#ef4444" stroke-width="0.8" stroke-opacity="0.5"/>
+    <text x="502" y="497" font-family="'Segoe UI', sans-serif" font-size="8" font-weight="700" letter-spacing="1" fill="#f87171">RACE CONDITION GUARD</text>
+    <text x="502" y="510" font-family="'Segoe UI', sans-serif" font-size="8" fill="#64748b">MongoDB Transaction + Unique Index</text>
+  </g>
+
+  <!-- NODE: MONGODB -->
+  <g>
+    <ellipse cx="1010" cy="355" rx="120" ry="150" fill="url(#dbGlow)" opacity="0.5"/>
+    <rect x="912" y="220" width="196" height="280" rx="16" fill="url(#dbCard)" stroke="#f59e0b" stroke-width="1.5" stroke-opacity="0.7"/>
+    <rect x="912" y="220" width="196" height="4" rx="2" fill="#f59e0b" opacity="0.8"/>
+    <text x="1010" y="244" text-anchor="middle" font-family="'Segoe UI', sans-serif" font-size="8" font-weight="600" letter-spacing="3" fill="#f59e0b" opacity="0.8">DATABASE</text>
+    <text x="1010" y="262" text-anchor="middle" font-family="'Segoe UI', sans-serif" font-size="15" font-weight="800" fill="white">MongoDB</text>
+    <line x1="930" y1="272" x2="1090" y2="272" stroke="#f59e0b" stroke-width="0.5" opacity="0.3"/>
+    <ellipse cx="1010" cy="292" rx="30" ry="7" fill="none" stroke="#f59e0b" stroke-width="1.2" opacity="0.6"/>
+    <text x="932" y="338" font-family="'Segoe UI', sans-serif" font-size="9" font-weight="600" letter-spacing="2" fill="#f59e0b" opacity="0.6">COLLECTIONS</text>
+    <rect x="927" y="344" width="166" height="44" rx="8" fill="#f59e0b" fill-opacity="0.08" stroke="#f59e0b" stroke-width="0.8" stroke-opacity="0.4"/>
+    <text x="950" y="360" font-family="'Segoe UI', sans-serif" font-size="10" font-weight="700" fill="#fbbf24">experts</text>
+    <rect x="927" y="394" width="166" height="44" rx="8" fill="#f59e0b" fill-opacity="0.08" stroke="#f59e0b" stroke-width="0.8" stroke-opacity="0.4"/>
+    <text x="950" y="410" font-family="'Segoe UI', sans-serif" font-size="10" font-weight="700" fill="#fbbf24">bookings</text>
+    <rect x="927" y="448" width="166" height="34" rx="7" fill="#854d0e" fill-opacity="0.3" stroke="#f59e0b" stroke-width="0.7" stroke-opacity="0.5"/>
+    <text x="1010" y="462" text-anchor="middle" font-family="'Segoe UI', sans-serif" font-size="8" font-weight="700" fill="#fbbf24">Compound Index</text>
+    <text x="1010" y="474" text-anchor="middle" font-family="'Segoe UI', sans-serif" font-size="7.5" fill="#92400e" font-weight="600">{expertId, date, timeSlot} unique</text>
+  </g>
+
+  <!-- NODE: SOCKET.IO -->
+  <g>
+    <ellipse cx="510" cy="685" rx="110" ry="60" fill="url(#socketGlow)" opacity="0.5"/>
+    <rect x="390" y="648" width="240" height="114" rx="14" fill="url(#socketCard)" stroke="#ec4899" stroke-width="1.5" stroke-opacity="0.7"/>
+    <rect x="390" y="648" width="240" height="4" rx="2" fill="#ec4899" opacity="0.8"/>
+    <text x="510" y="672" text-anchor="middle" font-family="'Segoe UI', sans-serif" font-size="8" font-weight="600" letter-spacing="3" fill="#ec4899" opacity="0.8">REAL-TIME</text>
+    <text x="510" y="690" text-anchor="middle" font-family="'Segoe UI', sans-serif" font-size="15" font-weight="800" fill="white">Socket.io</text>
+    <line x1="408" y1="700" x2="612" y2="700" stroke="#ec4899" stroke-width="0.5" opacity="0.3"/>
+    <rect x="405" y="706" width="104" height="22" rx="6" fill="#ec4899" fill-opacity="0.1" stroke="#ec4899" stroke-width="0.7" stroke-opacity="0.4"/>
+    <text x="457" y="720" text-anchor="middle" font-family="'Segoe UI', sans-serif" font-size="9" fill="#f9a8d4">slot-booked</text>
+    <rect x="515" y="706" width="104" height="22" rx="6" fill="#ec4899" fill-opacity="0.1" stroke="#ec4899" stroke-width="0.7" stroke-opacity="0.4"/>
+    <text x="567" y="720" text-anchor="middle" font-family="'Segoe UI', sans-serif" font-size="9" fill="#f9a8d4">slot-freed</text>
+  </g>
+
+  <!-- LEGEND -->
+  <g>
+    <rect x="30" y="614" width="320" height="132" rx="12" fill="#0a0f20" stroke="#1e293b" stroke-width="1"/>
+    <text x="50" y="636" font-family="'Segoe UI', sans-serif" font-size="9" font-weight="700" letter-spacing="2" fill="#475569">LEGEND</text>
+    <line x1="50" y1="650" x2="80" y2="650" stroke="#6366f1" stroke-width="2" stroke-dasharray="5,3"/>
+    <text x="88" y="654" font-family="'Segoe UI', sans-serif" font-size="10" fill="#94a3b8">REST / HTTP Request</text>
+    <line x1="50" y1="670" x2="80" y2="670" stroke="#10b981" stroke-width="2" stroke-dasharray="5,3"/>
+    <text x="88" y="674" font-family="'Segoe UI', sans-serif" font-size="10" fill="#94a3b8">HTTP Response</text>
+    <line x1="50" y1="690" x2="80" y2="690" stroke="#ec4899" stroke-width="2" stroke-dasharray="4,3"/>
+    <text x="100" y="694" font-family="'Segoe UI', sans-serif" font-size="10" fill="#94a3b8">WebSocket Event</text>
+    <line x1="50" y1="710" x2="80" y2="710" stroke="#f59e0b" stroke-width="2" stroke-dasharray="5,3"/>
+    <text x="88" y="714" font-family="'Segoe UI', sans-serif" font-size="10" fill="#94a3b8">DB Query / Response</text>
+  </g>
+
+  <!-- API ENDPOINTS TABLE -->
+  <g>
+    <rect x="740" y="550" width="420" height="220" rx="12" fill="#0a0f20" stroke="#1e293b" stroke-width="1"/>
+    <text x="760" y="572" font-family="'Segoe UI', sans-serif" font-size="9" font-weight="700" letter-spacing="2" fill="#475569">API ENDPOINTS</text>
+    <text x="760" y="592" font-family="'Segoe UI', monospace, sans-serif" font-size="9" fill="#6366f1" font-weight="600">METHOD</text>
+    <text x="820" y="592" font-family="'Segoe UI', monospace, sans-serif" font-size="9" fill="#6366f1" font-weight="600">ENDPOINT</text>
+    <text x="1010" y="592" font-family="'Segoe UI', monospace, sans-serif" font-size="9" fill="#6366f1" font-weight="600">PURPOSE</text>
+    <line x1="758" y1="596" x2="1148" y2="596" stroke="#1e293b" stroke-width="1"/>
+    <text x="760" y="614" fill="#34d399">GET</text>
+    <text x="820" y="614" fill="#e2e8f0">/api/experts</text>
+    <text x="1010" y="614" fill="#64748b">List + paginate + filter</text>
+    <text x="760" y="631" fill="#34d399">GET</text>
+    <text x="820" y="631" fill="#e2e8f0">/api/experts/:id</text>
+    <text x="1010" y="631" fill="#64748b">Expert detail + slots</text>
+    <text x="760" y="648" fill="#f87171">POST</text>
+    <text x="820" y="648" fill="#e2e8f0">/api/bookings</text>
+    <text x="1010" y="648" fill="#64748b">Create booking (validated)</text>
+    <text x="760" y="665" fill="#fb923c">PATCH</text>
+    <text x="820" y="665" fill="#e2e8f0">/api/bookings/:id/status</text>
+    <text x="1010" y="665" fill="#64748b">Update status</text>
+    <text x="760" y="682" fill="#34d399">GET</text>
+    <text x="820" y="682" fill="#e2e8f0">/api/bookings?email=</text>
+    <text x="1010" y="682" fill="#64748b">My bookings</text>
+    <text x="760" y="707" font-family="'Segoe UI', sans-serif" font-size="9" font-weight="600" fill="#475569">BOOKING STATUS</text>
+    <text x="758" y="742" font-family="'Courier New', monospace" font-size="8" fill="#64748b">PORT  MONGODB_URI  CLIENT_URL  NODE_ENV</text>
+  </g>
+
+  <!-- TECH STACK PILLS -->
+  <g transform="translate(380, 786)">
+    <rect x="0" y="0" width="62" height="20" rx="10" fill="#6366f1" fill-opacity="0.15" stroke="#6366f1" stroke-width="0.7" stroke-opacity="0.5"/>
+    <text x="31" y="13" text-anchor="middle" font-family="'Segoe UI', sans-serif" font-size="8.5" fill="#818cf8" font-weight="600">React 18</text>
+    <rect x="68" y="0" width="50" height="20" rx="10" fill="#10b981" fill-opacity="0.15" stroke="#10b981" stroke-width="0.7" stroke-opacity="0.5"/>
+    <text x="93" y="13" text-anchor="middle" font-family="'Segoe UI', sans-serif" font-size="8.5" fill="#34d399" font-weight="600">Node.js</text>
+    <rect x="124" y="0" width="58" height="20" rx="10" fill="#10b981" fill-opacity="0.15" stroke="#10b981" stroke-width="0.7" stroke-opacity="0.5"/>
+    <text x="153" y="13" text-anchor="middle" font-family="'Segoe UI', sans-serif" font-size="8.5" fill="#34d399" font-weight="600">Express</text>
+    <rect x="188" y="0" width="68" height="20" rx="10" fill="#f59e0b" fill-opacity="0.15" stroke="#f59e0b" stroke-width="0.7" stroke-opacity="0.5"/>
+    <text x="222" y="13" text-anchor="middle" font-family="'Segoe UI', sans-serif" font-size="8.5" fill="#fbbf24" font-weight="600">MongoDB</text>
+    <rect x="262" y="0" width="62" height="20" rx="10" fill="#ec4899" fill-opacity="0.15" stroke="#ec4899" stroke-width="0.7" stroke-opacity="0.5"/>
+    <text x="293" y="13" text-anchor="middle" font-family="'Segoe UI', sans-serif" font-size="8.5" fill="#f472b6" font-weight="600">Socket.io</text>
+    <rect x="330" y="0" width="42" height="20" rx="10" fill="#6366f1" fill-opacity="0.15" stroke="#6366f1" stroke-width="0.7" stroke-opacity="0.5"/>
+    <text x="351" y="13" text-anchor="middle" font-family="'Segoe UI', sans-serif" font-size="8.5" fill="#818cf8" font-weight="600">Vite</text>
+    <rect x="378" y="0" width="82" height="20" rx="10" fill="#f59e0b" fill-opacity="0.15" stroke="#f59e0b" stroke-width="0.7" stroke-opacity="0.5"/>
+    <text x="419" y="13" text-anchor="middle" font-family="'Segoe UI', sans-serif" font-size="8.5" fill="#fbbf24" font-weight="600">Mongoose</text>
+  </g>
+
+  <!-- LABEL ANNOTATIONS -->
+  <g>
+    <rect x="316" y="326" width="72" height="18" rx="6" fill="#0d1525" stroke="#6366f1" stroke-width="0.6" stroke-opacity="0.5"/>
+    <text x="352" y="338" text-anchor="middle" font-family="'Segoe UI', sans-serif" font-size="8" fill="#818cf8">REST API</text>
+    <rect x="316" y="358" width="72" height="18" rx="6" fill="#0d1525" stroke="#10b981" stroke-width="0.6" stroke-opacity="0.5"/>
+    <text x="352" y="370" text-anchor="middle" font-family="'Segoe UI', sans-serif" font-size="8" fill="#34d399">JSON Response</text>
+    <rect x="766" y="326" width="68" height="18" rx="6" fill="#0d1525" stroke="#f59e0b" stroke-width="0.6" stroke-opacity="0.5"/>
+    <text x="800" y="338" text-anchor="middle" font-family="'Segoe UI', sans-serif" font-size="8" fill="#fbbf24">Mongoose ODM</text>
+  </g>
+</svg>
