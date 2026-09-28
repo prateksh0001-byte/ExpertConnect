@@ -28,7 +28,7 @@ You'll use this URL as `VITE_BACKEND_URL` in the next step.
    - **Root Directory:** leave it at the repository root.
    - **Framework Preset:** Other (the checked-in `vercel.json` supplies the build settings).
    - **Build Command:** `npm --prefix frontend run build`.
-   - **Install Command:** `npm ci --prefix frontend`.
+   - **Install Command:** `cd frontend && npm ci`.
    - **Output Directory:** `frontend/dist`.
 4. **Environment Variables:** add:
    - **Name:** `VITE_BACKEND_URL`
