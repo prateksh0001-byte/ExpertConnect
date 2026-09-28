@@ -1,54 +1,79 @@
 import { Link, useLocation } from 'react-router-dom';
+import { Compass, Calendar, Sparkles } from 'lucide-react';
+import { useSocket } from '../context/SocketContext';
+import { useState, useEffect } from 'react';
 
 export default function Navbar() {
   const { pathname } = useLocation();
+  const socketRef = useSocket();
+  const [isConnected, setIsConnected] = useState(false);
+
+  useEffect(() => {
+    const socket = socketRef?.current;
+    if (!socket) return;
+
+    if (socket.connected) setIsConnected(true);
+
+    const onConnect = () => setIsConnected(true);
+    const onDisconnect = () => setIsConnected(false);
+
+    socket.on('connect', onConnect);
+    socket.on('disconnect', onDisconnect);
+
+    return () => {
+      socket.off('connect', onConnect);
+      socket.off('disconnect', onDisconnect);
+    };
+  }, [socketRef]);
 
   return (
-    <nav style={{
-      background: 'var(--forest)',
-      padding: '0 2rem',
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'space-between',
-      height: '64px',
-      position: 'sticky',
-      top: 0,
-      zIndex: 100,
-      boxShadow: '0 2px 20px rgba(0,0,0,0.25)',
-    }}>
-      <Link to="/" style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-        <div style={{
-          width: 32, height: 32,
-          background: 'var(--gold)',
-          borderRadius: '8px',
-          display: 'flex', alignItems: 'center', justifyContent: 'center',
-          fontSize: 16, fontWeight: 700, color: 'var(--forest)',
-          fontFamily: 'DM Serif Display, serif',
-        }}>E</div>
-        <span style={{
-          fontFamily: 'DM Serif Display, serif',
-          fontSize: '1.25rem',
-          color: '#fff',
-          letterSpacing: '-0.02em',
-        }}>ExpertConnect</span>
+    <header className="navbar">
+      <Link className="brand" to="/" aria-label="ExpertConnect Home">
+        <div className="brand-mark" aria-hidden="true">E</div>
+        <div className="brand-text">
+          <span className="brand-name">ExpertConnect</span>
+          <span className="brand-badge">Enterprise Mentorship</span>
+        </div>
       </Link>
 
-      <div style={{ display: 'flex', gap: '8px' }}>
-        {[
-          { to: '/', label: 'Experts' },
-          { to: '/my-bookings', label: 'My Bookings' },
-        ].map(({ to, label }) => (
-          <Link key={to} to={to} style={{
-            padding: '6px 16px',
-            borderRadius: '8px',
-            fontSize: '0.875rem',
-            fontWeight: 500,
-            color: pathname === to ? 'var(--gold)' : 'rgba(255,255,255,0.75)',
-            background: pathname === to ? 'rgba(201,149,42,0.15)' : 'transparent',
-            transition: 'all 0.2s',
-          }}>{label}</Link>
-        ))}
+      <div className="nav-right">
+        <div className="socket-status-pill" title={isConnected ? 'Connected to live real-time sync engine' : 'Connecting to real-time engine...'}>
+          <span className="socket-pulse-dot" style={{ background: isConnected ? '#2e7d32' : '#d97706' }} />
+          <span>{isConnected ? 'Real-Time Sync' : 'Connecting...'}</span>
+        </div>
+
+        <nav className="nav-links" aria-label="Main Navigation">
+          <Link
+            className={`nav-link${pathname === '/' || pathname.startsWith('/experts/') ? ' active' : ''}`}
+            to="/"
+          >
+            <Compass size={15} />
+            <span>Browse Experts</span>
+          </Link>
+          <Link
+            className={`nav-link${pathname === '/my-bookings' ? ' active' : ''}`}
+            to="/my-bookings"
+          >
+            <Calendar size={15} />
+            <span>My Sessions</span>
+          </Link>
+          <Link
+            to="/"
+            className="nav-link nav-link-cta"
+            state={{ scrollToExperts: true }}
+            onClick={(e) => {
+              if (pathname === '/') {
+                e.preventDefault();
+                document.getElementById('experts')?.scrollIntoView({ behavior: 'smooth' });
+              }
+              // On other pages: let Link navigate to '/' and ExpertList will scroll via location.state
+            }}
+          >
+            <Sparkles size={14} />
+            <span>Book a Session</span>
+          </Link>
+        </nav>
       </div>
-    </nav>
+    </header>
   );
 }

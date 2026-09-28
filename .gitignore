@@ -1,27 +1,46 @@
-# Dependencies
+# ============================================================
+# Dependencies — never commit node_modules
+# ============================================================
 node_modules/
+.pnp
+.pnp.js
 
-# Environment and secrets (never commit these)
+# ============================================================
+# Environment & secrets — never commit these
+# ============================================================
 .env
 .env.local
 .env.*.local
 *.env
 backend/.env
 frontend/.env
+frontend/.env.production.local
+frontend/.env.development.local
+frontend/.env.test.local
+frontend/.env.production
 
+# ============================================================
 # Build output
+# ============================================================
 dist/
 build/
 .next/
 out/
+frontend/dist/
 
-# Logs and debug
+# ============================================================
+# Logs
+# ============================================================
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 .pnpm-debug.log*
+*.log
+backend/server.log
 
-# OS and editor
+# ============================================================
+# OS & editor clutter
+# ============================================================
 .DS_Store
 Thumbs.db
 *.swp
@@ -29,9 +48,15 @@ Thumbs.db
 .idea/
 .vscode/
 *.sublime-*
+desktop.ini
 
-# Optional
-*.log
-.env.development.local
-.env.test.local
-.env.production.local
+# ============================================================
+# Vercel
+# ============================================================
+.vercel
+
+# ============================================================
+# Optional / local scripts (not needed in repo)
+# ============================================================
+start-all.bat
+start-all.ps1

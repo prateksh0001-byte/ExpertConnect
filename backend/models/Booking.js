@@ -29,7 +29,15 @@ const bookingSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-// Compound index for uniqueness: same expert, date, timeslot
-bookingSchema.index({ expertId: 1, date: 1, timeSlot: 1 }, { unique: true });
+bookingSchema.set('autoIndex', false);
+
+bookingSchema.index(
+  { expertId: 1, date: 1, timeSlot: 1 },
+  {
+    name: 'active_booking_slot_unique',
+    unique: true,
+    partialFilterExpression: { status: { $in: ['Pending', 'Confirmed', 'Completed'] } },
+  }
+);
 
 module.exports = mongoose.model('Booking', bookingSchema);

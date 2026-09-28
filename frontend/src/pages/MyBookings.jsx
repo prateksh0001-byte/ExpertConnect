@@ -1,215 +1,454 @@
-import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { useEffect, useState, useCallback, useRef } from 'react';
+import { Link, useLocation } from 'react-router-dom';
+import {
+  Calendar as CalendarIcon,
+  Clock,
+  Video,
+  Download,
+  AlertCircle,
+  CheckCircle,
+  XCircle,
+  Clock3,
+  Search,
+  ArrowRight,
+  ShieldAlert,
+} from 'lucide-react';
 import api from '../utils/api';
+import { generateICS } from '../utils/calendar';
+import { useSocket } from '../context/SocketContext';
 
 const statusConfig = {
-  Pending: { bg: '#fef9c3', color: '#854d0e', border: '#fde047', icon: '⏳' },
-  Confirmed: { bg: '#dcfce7', color: '#166534', border: '#86efac', icon: '✅' },
-  Completed: { bg: '#e0e7ff', color: '#3730a3', border: '#a5b4fc', icon: '🎓' },
-  Cancelled: { bg: '#fee2e2', color: '#991b1b', border: '#fca5a5', icon: '❌' },
+  Pending: { className: 'status-pending', icon: Clock3, label: 'Pending Confirmation' },
+  Confirmed: { className: 'status-confirmed', icon: CheckCircle, label: 'Confirmed' },
+  Completed: { className: 'status-completed', icon: CheckCircle, label: 'Completed' },
+  Cancelled: { className: 'status-cancelled', icon: XCircle, label: 'Cancelled' },
 };
 
 function formatDate(dateStr) {
-  const d = new Date(dateStr + 'T00:00:00');
-  return d.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' });
+  if (!dateStr) return '';
+  return new Date(`${dateStr}T00:00:00`).toLocaleDateString('en-US', {
+    weekday: 'short',
+    month: 'short',
+    day: 'numeric',
+    year: 'numeric',
+  });
 }
 
-function BookingCard({ booking, onStatusUpdate, index }) {
-  const s = statusConfig[booking.status] || statusConfig.Pending;
-  const [updating, setUpdating] = useState(false);
+function SessionCard({ booking, onCancel }) {
+  const statusMeta = statusConfig[booking.status] || statusConfig.Pending;
+  const StatusIcon = statusMeta.icon;
+  const [cancelling, setCancelling] = useState(false);
 
-  const handleCancel = async () => {
-    if (!window.confirm('Are you sure you want to cancel this booking?')) return;
-    setUpdating(true);
+  const handleCancelClick = async () => {
+    if (
+      !window.confirm(
+        `Are you sure you want to cancel your session with ${booking.expertName}? Your slot will be freed up for other clients immediately.`
+      )
+    ) {
+      return;
+    }
+
+    setCancelling(true);
     try {
-      await onStatusUpdate(booking._id, 'Cancelled');
+      await onCancel(booking._id);
     } finally {
-      setUpdating(false);
+      setCancelling(false);
     }
   };
 
   return (
-    <div className="animate-in" style={{
-      background: '#fff', border: '1px solid var(--border)', borderRadius: 14,
-      padding: '1.5rem', animationDelay: `${index * 0.05}s`,
-    }}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '0.75rem', marginBottom: '1rem' }}>
-        <div>
-          <h3 style={{ fontFamily: 'DM Serif Display, serif', fontSize: '1.1rem', marginBottom: 4 }}>{booking.expertName}</h3>
-          <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
-            <span style={{ fontSize: '0.8rem', color: 'var(--ink-muted)' }}>📅 {formatDate(booking.date)}</span>
-            <span style={{ fontSize: '0.8rem', color: 'var(--ink-muted)' }}>🕐 {booking.timeSlot}</span>
+    <article className="booking-session-card animate-in">
+      <div className="session-header">
+        <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
+          {booking.expertId?.avatar ? (
+            <img
+              src={booking.expertId.avatar}
+              alt={booking.expertName}
+              style={{ width: 48, height: 48, borderRadius: '50%', objectFit: 'cover' }}
+            />
+          ) : (
+            <div
+              className="expert-avatar-fallback"
+              style={{ width: 48, height: 48, fontSize: 16 }}
+            >
+              {booking.expertName?.slice(0, 2) || 'EC'}
+            </div>
+          )}
+
+          <div>
+            <h3
+              style={{
+                margin: '0 0 4px',
+                fontFamily: 'var(--font-serif)',
+                fontSize: '20px',
+                color: 'var(--text-main)',
+              }}
+            >
+              {booking.expertName}
+            </h3>
+            <div style={{ fontSize: '12px', color: 'var(--text-muted)' }}>
+              {booking.expertId?.category || 'Expert'} · 60-Minute Consultation
+            </div>
           </div>
         </div>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-          <span style={{
-            padding: '4px 12px', borderRadius: 20, fontSize: '0.78rem', fontWeight: 600,
-            background: s.bg, color: s.color, border: `1px solid ${s.border}`,
-          }}>
-            {s.icon} {booking.status}
-          </span>
-        </div>
-      </div>
 
-      <div style={{ background: 'var(--cream)', borderRadius: 10, padding: '0.875rem 1rem', marginBottom: '1rem', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.5rem' }}>
-        <div>
-          <div style={{ fontSize: '0.72rem', color: 'var(--ink-muted)', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.04em' }}>Name</div>
-          <div style={{ fontSize: '0.875rem', fontWeight: 500 }}>{booking.clientName}</div>
-        </div>
-        <div>
-          <div style={{ fontSize: '0.72rem', color: 'var(--ink-muted)', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.04em' }}>Email</div>
-          <div style={{ fontSize: '0.875rem', fontWeight: 500 }}>{booking.clientEmail}</div>
-        </div>
-        {booking.notes && (
-          <div style={{ gridColumn: '1/-1' }}>
-            <div style={{ fontSize: '0.72rem', color: 'var(--ink-muted)', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.04em', marginBottom: 2 }}>Notes</div>
-            <div style={{ fontSize: '0.875rem', color: 'var(--ink-light)' }}>{booking.notes}</div>
-          </div>
-        )}
-      </div>
-
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-        <span style={{ fontSize: '0.75rem', color: 'var(--ink-muted)' }}>
-          Booked {new Date(booking.createdAt).toLocaleDateString()}
+        <span className={`status-pill ${statusMeta.className}`}>
+          <StatusIcon size={13} />
+          <span>{statusMeta.label}</span>
         </span>
-        {booking.status === 'Pending' && (
-          <button onClick={handleCancel} disabled={updating} style={{
-            padding: '0.4rem 0.9rem', borderRadius: 8, fontSize: '0.8rem',
-            border: '1px solid var(--error)', color: 'var(--error)', background: '#fff',
-            cursor: updating ? 'not-allowed' : 'pointer', transition: 'all 0.2s',
-          }}
-            onMouseEnter={e => { e.currentTarget.style.background = 'var(--error)'; e.currentTarget.style.color = '#fff'; }}
-            onMouseLeave={e => { e.currentTarget.style.background = '#fff'; e.currentTarget.style.color = 'var(--error)'; }}
-          >
-            {updating ? 'Cancelling...' : 'Cancel Booking'}
-          </button>
-        )}
       </div>
-    </div>
+
+      <div className="session-info-grid">
+        <div className="session-info-item">
+          <span className="label">Appointment Date</span>
+          <span className="value">{formatDate(booking.date)}</span>
+        </div>
+        <div className="session-info-item">
+          <span className="label">Scheduled Time</span>
+          <span className="value">{booking.timeSlot} (60 min)</span>
+        </div>
+        <div className="session-info-item">
+          <span className="label">Client Email</span>
+          <span className="value">{booking.clientEmail}</span>
+        </div>
+        <div className="session-info-item">
+          <span className="label">Phone</span>
+          <span className="value">{booking.clientPhone}</span>
+        </div>
+      </div>
+
+      {booking.notes && (
+        <div
+          style={{
+            fontSize: '12.5px',
+            color: 'var(--text-muted)',
+            marginBottom: '16px',
+            background: 'var(--bg-main)',
+            padding: '10px 14px',
+            borderRadius: '6px',
+          }}
+        >
+          <strong>Agenda:</strong> {booking.notes}
+        </div>
+      )}
+
+      <div className="session-actions-bar">
+        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
+          {booking.status !== 'Cancelled' && (
+            <>
+              <Link
+                to={`/room/${booking._id}`}
+                className="btn-primary"
+                style={{ padding: '8px 14px', fontSize: '12px' }}
+              >
+                <Video size={14} />
+                <span>Join Virtual Room</span>
+              </Link>
+
+              <button
+                type="button"
+                className="btn-secondary"
+                style={{ padding: '8px 12px', fontSize: '12px' }}
+                onClick={() =>
+                  generateICS({
+                    title: `Consultation with ${booking.expertName}`,
+                    description: booking.notes,
+                    expertName: booking.expertName,
+                    date: booking.date,
+                    timeSlot: booking.timeSlot,
+                  })
+                }
+              >
+                <Download size={13} />
+                <span>Save to Calendar</span>
+              </button>
+            </>
+          )}
+        </div>
+
+        <div>
+          {booking.status === 'Pending' && (
+            <button
+              type="button"
+              className="btn-secondary"
+              style={{
+                color: '#dc2626',
+                borderColor: '#fca5a5',
+                fontSize: '12px',
+                padding: '8px 12px',
+              }}
+              disabled={cancelling}
+              onClick={handleCancelClick}
+            >
+              {cancelling ? 'Cancelling...' : 'Cancel Reservation'}
+            </button>
+          )}
+        </div>
+      </div>
+    </article>
   );
 }
 
 export default function MyBookings() {
-  const [email, setEmail] = useState('');
-  const [emailInput, setEmailInput] = useState('');
+  const location = useLocation();
+  const socketRef = useSocket();
+
+  const [emailInput, setEmailInput] = useState(
+    location.state?.email || localStorage.getItem('expertBooking_email') || ''
+  );
+  const [activeEmail, setActiveEmail] = useState('');
   const [bookings, setBookings] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [searched, setSearched] = useState(false);
+  const [statusFilter, setStatusFilter] = useState('All');
 
-  const fetchBookings = async (e) => {
-    e?.preventDefault();
-    if (!emailInput.trim() || !/^\S+@\S+\.\S+$/.test(emailInput)) {
-      setError('Please enter a valid email address');
-      return;
+  const fetchBookings = useCallback(
+    async (emailToSearch) => {
+      const target = (emailToSearch || emailInput).trim().toLowerCase();
+      if (!/^\S+@\S+\.\S+$/.test(target)) {
+        setError('Please enter a valid email address.');
+        return;
+      }
+
+      setLoading(true);
+      setError('');
+      setSearched(true);
+      setActiveEmail(target);
+      localStorage.setItem('expertBooking_email', target);
+
+      // Join the user-specific socket room so status updates are targeted
+      const socket = socketRef?.current;
+      if (socket) {
+        socket.emit('join-user-room', target);
+      }
+
+      try {
+        const { data } = await api.get('/bookings', { params: { email: target } });
+        setBookings(data.data);
+      } catch (err) {
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    },
+    [emailInput, socketRef]
+  );
+
+  // One-time mount effect — auto-search if we have a stored/passed email.
+  // Uses a ref guard so it never re-runs when fetchBookings reference changes.
+  const hasFetchedOnMount = useRef(false);
+  useEffect(() => {
+    if (hasFetchedOnMount.current) return;
+    const initialEmail = location.state?.email || localStorage.getItem('expertBooking_email');
+    if (initialEmail) {
+      hasFetchedOnMount.current = true;
+      fetchBookings(initialEmail);
     }
-    setLoading(true);
-    setError('');
-    setSearched(true);
-    setEmail(emailInput.trim());
+  }, [fetchBookings]); // fetchBookings listed to satisfy lint; ref guard prevents re-runs
+
+  // Listen to socket status updates
+  useEffect(() => {
+    const socket = socketRef?.current;
+    if (!socket) return;
+
+    const handleStatusChanged = ({ bookingId, status }) => {
+      setBookings((prev) =>
+        prev.map((b) => (b._id === bookingId ? { ...b, status } : b))
+      );
+    };
+
+    socket.on('booking-status-changed', handleStatusChanged);
+    return () => {
+      socket.off('booking-status-changed', handleStatusChanged);
+    };
+  }, [socketRef]);
+
+  const handleCancel = async (bookingId) => {
     try {
-      const { data } = await api.get('/bookings', { params: { email: emailInput.trim() } });
-      setBookings(data.data);
+      await api.patch(`/bookings/${bookingId}/status`, { status: 'Cancelled' });
+      setBookings((prev) =>
+        prev.map((b) => (b._id === bookingId ? { ...b, status: 'Cancelled' } : b))
+      );
     } catch (err) {
       setError(err.message);
-    } finally {
-      setLoading(false);
     }
   };
 
-  const handleStatusUpdate = async (bookingId, status) => {
-    try {
-      await api.patch(`/bookings/${bookingId}/status`, { status });
-      setBookings(prev => prev.map(b => b._id === bookingId ? { ...b, status } : b));
-    } catch (err) {
-      alert(err.message);
-    }
+  const handleLookupSubmit = (e) => {
+    e.preventDefault();
+    fetchBookings(emailInput);
   };
 
-  const grouped = {
-    Pending: bookings.filter(b => b.status === 'Pending'),
-    Confirmed: bookings.filter(b => b.status === 'Confirmed'),
-    Completed: bookings.filter(b => b.status === 'Completed'),
-    Cancelled: bookings.filter(b => b.status === 'Cancelled'),
+  const filteredBookings =
+    statusFilter === 'All'
+      ? bookings
+      : bookings.filter((b) => b.status === statusFilter);
+
+  const statusCounts = {
+    All: bookings.length,
+    Pending: bookings.filter((b) => b.status === 'Pending').length,
+    Confirmed: bookings.filter((b) => b.status === 'Confirmed').length,
+    Completed: bookings.filter((b) => b.status === 'Completed').length,
+    Cancelled: bookings.filter((b) => b.status === 'Cancelled').length,
   };
 
   return (
-    <div style={{ maxWidth: 800, margin: '0 auto', padding: '2.5rem 1.5rem' }}>
-      <h1 style={{ fontFamily: 'DM Serif Display, serif', fontSize: 'clamp(1.75rem, 3vw, 2.5rem)', marginBottom: '0.5rem' }}>My Bookings</h1>
-      <p style={{ color: 'var(--ink-muted)', marginBottom: '2rem', fontSize: '0.9rem' }}>Enter your email to view your session bookings</p>
+    <div className="bookings-container animate-in">
+      <div className="section-kicker">SESSION MANAGEMENT</div>
+      <h1
+        style={{
+          fontFamily: 'var(--font-serif)',
+          fontSize: '36px',
+          color: 'var(--text-main)',
+          margin: '4px 0 12px',
+        }}
+      >
+        My Scheduled Sessions
+      </h1>
+      <p style={{ color: 'var(--text-muted)', fontSize: '14.5px', margin: 0 }}>
+        Look up your upcoming and historical consultations by your email address.
+      </p>
 
-      {/* Email search */}
-      <form onSubmit={fetchBookings} style={{ display: 'flex', gap: '0.75rem', marginBottom: '2rem', maxWidth: 480 }}>
+      {/* Email Lookup Input */}
+      <form onSubmit={handleLookupSubmit} className="email-lookup-bar">
         <input
           type="email"
-          placeholder="your@email.com"
+          autoComplete="email"
+          placeholder="Enter your booking email (e.g. alex@example.com)..."
+          className="form-input"
           value={emailInput}
-          onChange={e => { setEmailInput(e.target.value); setError(''); }}
-          style={{
-            flex: 1, padding: '0.75rem 1rem', border: `2px solid ${error ? 'var(--error)' : 'var(--border)'}`,
-            borderRadius: 10, fontSize: '0.9rem', background: '#fff', transition: 'border-color 0.2s',
+          onChange={(e) => {
+            setEmailInput(e.target.value);
+            setError('');
           }}
-          onFocus={e => e.target.style.borderColor = 'var(--gold)'}
-          onBlur={e => e.target.style.borderColor = error ? 'var(--error)' : 'var(--border)'}
         />
-        <button type="submit" disabled={loading} style={{
-          padding: '0.75rem 1.25rem', background: 'var(--forest)', color: '#fff',
-          borderRadius: 10, fontWeight: 600, fontSize: '0.875rem',
-          cursor: loading ? 'not-allowed' : 'pointer', opacity: loading ? 0.7 : 1,
-        }}>
-          {loading ? 'Loading...' : 'Find Bookings'}
+        <button
+          type="submit"
+          className="btn-primary"
+          style={{ whiteSpace: 'nowrap' }}
+          disabled={loading}
+        >
+          {loading ? 'Searching...' : 'Find Sessions'}
         </button>
       </form>
 
-      {error && <div style={{ color: 'var(--error)', fontSize: '0.875rem', marginBottom: '1rem' }}>⚠️ {error}</div>}
+      {error && (
+        <div
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: '8px',
+            padding: '14px 18px',
+            background: '#fef2f2',
+            border: '1px solid #fecaca',
+            borderRadius: '8px',
+            color: '#b91c1c',
+            marginBottom: '20px',
+            fontSize: '13px',
+          }}
+        >
+          <AlertCircle size={16} />
+          <span>{error}</span>
+        </div>
+      )}
 
-      {/* Results */}
       {!searched ? (
-        <div style={{ textAlign: 'center', padding: '4rem 2rem', color: 'var(--ink-muted)' }}>
-          <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>📋</div>
-          <h3 style={{ marginBottom: '0.5rem' }}>Find your sessions</h3>
-          <p style={{ fontSize: '0.875rem' }}>Enter the email you used when booking</p>
+        <div
+          style={{
+            textAlign: 'center',
+            padding: '60px 20px',
+            background: '#ffffff',
+            borderRadius: 'var(--radius-lg)',
+            border: '1px solid var(--border-light)',
+          }}
+        >
+          <CalendarIcon size={44} color="var(--primary)" style={{ marginBottom: '14px' }} />
+          <h2 style={{ fontFamily: 'var(--font-serif)', fontSize: '24px', margin: '0 0 8px' }}>
+            Find Your Calendar Sessions
+          </h2>
+          <p style={{ color: 'var(--text-muted)', fontSize: '13.5px', maxWidth: '420px', margin: '0 auto' }}>
+            Enter the email address you used when booking to view live links, download calendar
+            invites, or manage your schedule.
+          </p>
         </div>
       ) : loading ? (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-          {[1, 2, 3].map(i => <div key={i} className="skeleton" style={{ height: 160, borderRadius: 14 }} />)}
+        <div style={{ display: 'grid', gap: '16px' }}>
+          {[1, 2].map((i) => (
+            <div key={i} className="skeleton-box" style={{ height: 180, borderRadius: 14 }} />
+          ))}
         </div>
       ) : bookings.length === 0 ? (
-        <div style={{ textAlign: 'center', padding: '3rem', background: '#fff', borderRadius: 14, border: '1px solid var(--border)' }}>
-          <div style={{ fontSize: '2.5rem', marginBottom: '1rem' }}>🔍</div>
-          <h3 style={{ marginBottom: '0.5rem' }}>No bookings found</h3>
-          <p style={{ fontSize: '0.875rem', color: 'var(--ink-muted)', marginBottom: '1.5rem' }}>
-            No bookings found for <strong>{email}</strong>
+        <div
+          style={{
+            textAlign: 'center',
+            padding: '60px 20px',
+            background: '#ffffff',
+            borderRadius: 'var(--radius-lg)',
+            border: '1px solid var(--border-light)',
+          }}
+        >
+          <div style={{ fontSize: '38px', marginBottom: '12px' }}>🗓️</div>
+          <h2 style={{ fontFamily: 'var(--font-serif)', fontSize: '24px', margin: '0 0 8px' }}>
+            No Sessions Found for {activeEmail}
+          </h2>
+          <p style={{ color: 'var(--text-muted)', fontSize: '13.5px', maxWidth: '420px', margin: '0 auto 20px' }}>
+            There are no registered consultations under this email. Explore our mentor network
+            to book your first session.
           </p>
-          <Link to="/" style={{ display: 'inline-block', padding: '0.7rem 1.5rem', background: 'var(--forest)', color: '#fff', borderRadius: 10, fontWeight: 600, fontSize: '0.875rem' }}>
-            Browse Experts
+          <Link to="/" className="btn-primary">
+            Explore Mentors
           </Link>
         </div>
       ) : (
-        <div>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
-            <p style={{ color: 'var(--ink-muted)', fontSize: '0.875rem' }}>
-              Found <strong style={{ color: 'var(--ink)' }}>{bookings.length}</strong> booking{bookings.length !== 1 ? 's' : ''} for <strong style={{ color: 'var(--ink)' }}>{email}</strong>
-            </p>
-            {/* Summary pills */}
-            <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
-              {Object.entries(grouped).filter(([, arr]) => arr.length > 0).map(([status, arr]) => {
-                const s = statusConfig[status];
-                return (
-                  <span key={status} style={{ padding: '3px 10px', borderRadius: 20, fontSize: '0.72rem', fontWeight: 600, background: s.bg, color: s.color, border: `1px solid ${s.border}` }}>
-                    {s.icon} {arr.length} {status}
-                  </span>
-                );
-              })}
-            </div>
-          </div>
-
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-            {bookings.map((booking, i) => (
-              <BookingCard key={booking._id} booking={booking} onStatusUpdate={handleStatusUpdate} index={i} />
+        <>
+          {/* Status Tabs */}
+          <div className="status-tabs-row">
+            {['All', 'Pending', 'Confirmed', 'Completed', 'Cancelled'].map((status) => (
+              <button
+                key={status}
+                type="button"
+                className={`status-tab-btn${statusFilter === status ? ' active' : ''}`}
+                onClick={() => setStatusFilter(status)}
+              >
+                <span>{status}</span>
+                <span
+                  style={{
+                    padding: '2px 7px',
+                    borderRadius: '10px',
+                    background: statusFilter === status ? 'rgba(255,255,255,0.25)' : 'var(--bg-card-subtle)',
+                    fontSize: '11px',
+                  }}
+                >
+                  {statusCounts[status]}
+                </span>
+              </button>
             ))}
           </div>
-        </div>
+
+          {/* Bookings List */}
+          <div style={{ display: 'grid', gap: '16px' }}>
+            {filteredBookings.length > 0 ? (
+              filteredBookings.map((b) => (
+                <SessionCard key={b._id} booking={b} onCancel={handleCancel} />
+              ))
+            ) : (
+              <div
+                style={{
+                  textAlign: 'center',
+                  padding: '40px 20px',
+                  background: '#ffffff',
+                  borderRadius: '12px',
+                  border: '1px solid var(--border-light)',
+                  color: 'var(--text-muted)',
+                  fontSize: '13.5px',
+                }}
+              >
+                No {statusFilter.toLowerCase()} sessions found.
+              </div>
+            )}
+          </div>
+        </>
       )}
     </div>
   );

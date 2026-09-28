@@ -1,6 +1,6 @@
 # Deploy ExpertConnect to Vercel
 
-The **frontend** (React + Vite) deploys to Vercel. The **backend** (Node + Express + Socket.io + MongoDB) must be hosted elsewhere (e.g. Railway, Render), then you point the frontend to it.
+This repository's Vercel configuration deploys the **frontend** (React + Vite). Host the **backend** (Node + Express + Socket.io + MongoDB) on a Node service such as Railway or Render, then point the frontend at it.
 
 ---
 
@@ -9,8 +9,8 @@ The **frontend** (React + Vite) deploys to Vercel. The **backend** (Node + Expre
 Your API and Socket.io server need a public URL. Example with **Railway**:
 
 1. Go to [railway.app](https://railway.app) and sign in with GitHub.
-2. **New Project** → **Deploy from GitHub repo** → select `expert_booking_system`.
-3. Set **Root Directory** to `backend` (or only deploy the backend folder).
+2. **New Project** → **Deploy from GitHub repo** → select `prateksh0001-byte/ExpertConnect`.
+3. Set **Root Directory** to `backend`.
 4. Add **Variables**: `MONGODB_URI`, `CLIENT_URL` (your Vercel frontend URL, e.g. `https://expert-booking.vercel.app`), `NODE_ENV=production`.
 5. Deploy and copy the public URL (e.g. `https://expert-booking-api-production.up.railway.app`).
 
@@ -23,12 +23,13 @@ You'll use this URL as `VITE_BACKEND_URL` in the next step.
 ### Option A: Vercel dashboard (recommended)
 
 1. Go to [vercel.com](https://vercel.com) and sign in with GitHub.
-2. **Add New** → **Project** → import `xouvik09/expert_booking_system`.
+2. **Add New** → **Project** → import `prateksh0001-byte/ExpertConnect`.
 3. **Configure:**
-   - **Root Directory:** click **Edit**, set to `frontend`, then **Continue**.
-   - **Framework Preset:** Vite (auto-detected).
-   - **Build Command:** `npm run build` (default).
-   - **Output Directory:** `dist` (default).
+   - **Root Directory:** leave it at the repository root.
+   - **Framework Preset:** Other (the checked-in `vercel.json` supplies the build settings).
+   - **Build Command:** `npm --prefix frontend run build`.
+   - **Install Command:** `npm ci --prefix frontend`.
+   - **Output Directory:** `frontend/dist`.
 4. **Environment Variables:** add:
    - **Name:** `VITE_BACKEND_URL`
    - **Value:** your backend URL from step 1 (e.g. `https://expert-booking-api-production.up.railway.app`)
@@ -38,12 +39,10 @@ You'll use this URL as `VITE_BACKEND_URL` in the next step.
 ### Option B: Vercel CLI
 
 ```bash
-cd frontend
-npm i -g vercel
-vercel
+npx vercel
 ```
 
-When prompted, set **Root Directory** to `.` (you're already in `frontend`). Then add the env var in the Vercel dashboard: **Project → Settings → Environment Variables** → `VITE_BACKEND_URL` = your backend URL.
+Run it from the repository root. The checked-in `vercel.json` builds the frontend. Add `VITE_BACKEND_URL` in **Project → Settings → Environment Variables** and redeploy.
 
 ---
 
@@ -62,7 +61,7 @@ Redeploy the backend after changing env vars so CORS and Socket.io allow the Ver
 | Step | Where | What |
 |------|--------|------|
 | 1 | Railway / Render | Deploy backend, get URL, set `MONGODB_URI`, `CLIENT_URL`, `NODE_ENV` |
-| 2 | Vercel | Import repo, Root Directory = `frontend`, add `VITE_BACKEND_URL` = backend URL |
+| 2 | Vercel | Import repo at root, add `VITE_BACKEND_URL` = backend URL |
 | 3 | Backend host | Set `CLIENT_URL` = Vercel frontend URL, redeploy |
 
 After that, the Vercel site will call your backend for API and Socket.io; real-time updates will work as long as your backend URL is correct and CORS is set via `CLIENT_URL`.
